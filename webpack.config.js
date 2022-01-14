@@ -22,4 +22,8 @@ module.exports = {
   devServer: {
     static: './dist'
   },
+  performance: {
+    maxEntrypointSize: 2048576,
+    maxAssetSize: 2048576
+  }
 };

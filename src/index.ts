@@ -1,7 +1,29 @@
+import * as moment from 'moment-timezone';
+
 const SCALE = 10;
 const CLOCK_RADIUS = 17;
 const LETTERS_RADIUS = 5;
 const LETTERS_OUTER_RADIUS = 8;
+
+const TICK_COLOR = 'white';
+const NUMBERS_COLOR = 'white';
+const LETTERS_COLOR = 'white';
+const HOUR_HAND_COLOR = 'red';
+const MINUTES_HAND_COLOR = 'red';
+const SECONDS_HAND_COLOR = '#333';
+
+const CIRCLE_LINE_WIDTH = 0.5;
+
+const LETTERS_DISTANCE = 6.5;
+const HOURS_DISTANCE = 9.5;
+const MINUTES_DISTANCE = 15;
+
+const HOURS_X_OFFSET = 0.6 * SCALE;
+const HOURS_Y_OFFSET = 0.5 * SCALE;
+const MINUTES_X_OFFSET = 0.6 * SCALE;
+const MINUTES_Y_OFFSET = 0.6 * SCALE;
+const LETTERS_X_OFFSET = 0.4 * SCALE;
+const LETTERS_Y_OFFSET = 0.5 * SCALE;
 
 const LETTERS: Record<number, string> = {
    1: 'A',  2: 'B',  3: 'C',  4: 'D',
@@ -15,26 +37,36 @@ const LETTERS: Record<number, string> = {
 class Clock {
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
-  private timezone: HTMLSelectElement;
-  private secondsDial: Vec2;
+  private timezoneSelect: HTMLSelectElement;
   private timezoneOffset: number;
+  private secondsDial: Vec2;
 
   constructor() {
-    this.timezone = document.getElementById('timezone') as HTMLSelectElement;
+    this.timezoneSelect = document.getElementById('timezone') as HTMLSelectElement;
     this.canvas = document.getElementById('canvas') as HTMLCanvasElement;
     this.ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D;
     this.secondsDial = new Vec2(0, 1);
-    this.timezoneOffset = 0;
 
     this.setCanvasSize(this.canvas);
+    this.setCanvasColor(this.canvas, '#000');
+    this.populateSelectBox();
     this.addEventListeners();
+
+    this.timezoneOffset = parseInt(this.timezoneSelect.value) / 60;
+  }
+
+  private setCanvasColor(canvas: HTMLCanvasElement, color: string) {
+    canvas.style.background = color;
+  }
+
+  private getTimezoneOffset(zone: string): number {
+    return -moment.tz.zone(zone)!.utcOffset(new Date().getTime());
   }
 
   private addEventListeners() {
-    this.timezone.addEventListener('change', () => {
-      const timezone = this.timezone.value;
-      const offset = parseInt(timezone.slice(4, 7));
-      this.timezoneOffset = offset;
+    this.timezoneSelect.addEventListener('change', () => {
+      const offset = this.timezoneSelect.value;
+      this.timezoneOffset = parseInt(offset) / 60;
     });
   }
 
@@ -43,8 +75,23 @@ class Clock {
     this.canvas.height = window.innerHeight;
   }
 
-  private drawCircle(center: Vec2, r: number) {
+  private populateSelectBox() {
+    const timezones = moment.tz.names();
+    
+    for (const zone of timezones) {
+      const option = document.createElement('option');
+      const offset = this.getTimezoneOffset(zone);
+      
+      option.value = offset.toString();
+      option.innerText = zone;
+      
+      this.timezoneSelect.appendChild(option);
+    }
+  }
+
+  private drawCircle(center: Vec2, r: number, fill?: string, stroke?: string) {
     this.ctx.beginPath();
+    this.ctx.lineWidth = CIRCLE_LINE_WIDTH;
     this.ctx.arc(
       center.x,
       center.y,
@@ -52,8 +99,18 @@ class Clock {
       0,
       2 * Math.PI,
     )
-    this.ctx.strokeStyle = 'black';
-    this.ctx.stroke();
+    
+    if (stroke) {
+      this.ctx.strokeStyle = stroke;
+      this.ctx.stroke();
+  
+    }
+
+    if (fill) {
+      this.ctx.fillStyle = fill;
+      this.ctx.fill();
+    }
+
     this.ctx.closePath();
   }
 
@@ -61,41 +118,19 @@ class Clock {
     for (let hour = 1; hour <= 24; hour++) {
       const angle = -hour * (Math.PI / 12) - Math.PI / 2;
       const coord = new Vec2(Math.cos(angle), Math.sin(angle));
-      const canvasCoord = math2Canvas(coord.scalarMul(9.5));
-      const adjustedCanvasCoord = new Vec2(canvasCoord.x - 0.6 * SCALE, canvasCoord.y + 0.5 * SCALE);
+      const canvasCoord = math2Canvas(coord.scalarMul(HOURS_DISTANCE));
+      const adjustedCanvasCoord = new Vec2(
+        canvasCoord.x - HOURS_X_OFFSET,
+        canvasCoord.y + HOURS_Y_OFFSET,
+      );
       
       this.ctx.beginPath();
-      this.ctx.fillStyle = 'black';
-      this.ctx.fillText(hour.toString(), adjustedCanvasCoord.x, adjustedCanvasCoord.y);
-      this.ctx.closePath();
-    }
-  }
-
-  private drawLetters() {
-    for (let hour = 1; hour <= 24; hour++) {
-      const angle = -hour * (Math.PI / 12) - Math.PI / 2 + (Math.PI / 12) - this.timezoneOffset * (Math.PI / 12);
-      const coord = new Vec2(Math.cos(angle), Math.sin(angle));
-      const canvasCoord = math2Canvas(coord.scalarMul(6.5));
-      const adjustedCanvasCoord = new Vec2(canvasCoord.x - 0.4 * SCALE, canvasCoord.y + 0.5 * SCALE);
-
-      this.ctx.beginPath();
-      this.ctx.fillStyle = 'black';
-      this.ctx.fillText(LETTERS[hour], adjustedCanvasCoord.x, adjustedCanvasCoord.y);
-      this.ctx.closePath();
-    }
-  }
-
-  private drawTicks() {
-    for (let hour = 1; hour <= 24; hour++) {
-      const angle = -hour * (Math.PI / 12) + Math.PI / 2;
-      const coord = new Vec2(Math.cos(angle), Math.sin(angle));
-      const canvasCoord = math2Canvas(coord.scalarMul(10.5));
-      const tickAttachment = math2Canvas(coord.scalarMul(12));
-      
-      this.ctx.beginPath();
-      this.ctx.moveTo(canvasCoord.x, canvasCoord.y);
-      this.ctx.lineTo(tickAttachment.x, tickAttachment.y);
-      this.ctx.stroke();
+      this.ctx.fillStyle = NUMBERS_COLOR;
+      this.ctx.fillText(
+        hour.toString(),
+        adjustedCanvasCoord.x,
+        adjustedCanvasCoord.y,
+      );
       this.ctx.closePath();
     }
   }
@@ -104,21 +139,61 @@ class Clock {
     for (let minute = 1; minute <= 12; minute++) {
       const angle = -minute * (Math.PI / 6) + Math.PI / 2;
       const coord = new Vec2(Math.cos(angle), Math.sin(angle));
-      const canvasCoord = math2Canvas(coord.scalarMul(15.5));
+      const canvasCoord = math2Canvas(coord.scalarMul(MINUTES_DISTANCE));
       
       this.ctx.beginPath();
-      this.ctx.fillStyle = 'black';
-      this.ctx.fillText((5 * minute).toString(), canvasCoord.x - 0.6 * SCALE, canvasCoord.y + 0.6 * SCALE);
+      this.ctx.fillStyle = 'white';
+      this.ctx.fillText(
+        (5 * minute).toString(),
+        canvasCoord.x - MINUTES_X_OFFSET,
+        canvasCoord.y + MINUTES_Y_OFFSET,
+      );
       this.ctx.closePath();
     }
   }
 
-  private drawDial(angle: number, length: number) {
+  private drawLetters() {
+    for (let hour = 1; hour <= 24; hour++) {
+      const angle = -(hour + this.timezoneOffset) * (Math.PI / 12) - (Math.PI / 2) + (Math.PI / 12);
+      const coord = new Vec2(Math.cos(angle), Math.sin(angle));
+      const canvasCoord = math2Canvas(coord.scalarMul(LETTERS_DISTANCE));
+      const adjustedCanvasCoord = new Vec2(
+        canvasCoord.x - LETTERS_X_OFFSET,
+        canvasCoord.y + LETTERS_Y_OFFSET,
+      );
+
+      this.ctx.beginPath();
+      this.ctx.fillStyle = LETTERS_COLOR;
+      this.ctx.fillText(LETTERS[hour], adjustedCanvasCoord.x, adjustedCanvasCoord.y);
+      this.ctx.closePath();
+    }
+  }
+
+  private drawTicks(count: number, distance: number, length: number) {
+    for (let tick = 1; tick <= count; tick++) {
+      const angle = -tick * (Math.PI / (count / 2)) + Math.PI / 2;
+      const coord = new Vec2(Math.cos(angle), Math.sin(angle));
+      const canvasCoord = math2Canvas(coord.scalarMul(distance));
+      const tickAttachment = math2Canvas(coord.scalarMul(distance + length));
+      
+      this.ctx.beginPath();
+      this.ctx.moveTo(canvasCoord.x, canvasCoord.y);
+      this.ctx.lineTo(tickAttachment.x, tickAttachment.y);
+      this.ctx.strokeStyle = TICK_COLOR;
+      this.ctx.stroke();
+      this.ctx.closePath();
+    }
+  }
+
+  private drawDial(angle: number, length: number, stroke: string, width: number) {
     const dialOrigin = math2Canvas(new Vec2(0, 0));
     const dialCoords = math2Canvas(new Vec2(Math.cos(angle), Math.sin(angle)).scalarMul(length));
+
     this.ctx.beginPath();
     this.ctx.moveTo(dialOrigin.x, dialOrigin.y);
     this.ctx.lineTo(dialCoords.x, dialCoords.y);
+    this.ctx.lineWidth = width;
+    this.ctx.strokeStyle = stroke;
     this.ctx.stroke();
     this.ctx.closePath();
   }
@@ -129,13 +204,15 @@ class Clock {
 
   public reDraw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.drawCircle(math2Canvas(new Vec2(0, 0)), CLOCK_RADIUS);
-    this.drawCircle(math2Canvas(new Vec2(0, 0)), LETTERS_RADIUS);
-    this.drawCircle(math2Canvas(new Vec2(0, 0)), LETTERS_OUTER_RADIUS);
+
+    this.drawCircle(math2Canvas(new Vec2(0, 0)), CLOCK_RADIUS, undefined, 'white');
+    this.drawCircle(math2Canvas(new Vec2(0, 0)), LETTERS_RADIUS, undefined, 'white');
+    this.drawCircle(math2Canvas(new Vec2(0, 0)), LETTERS_OUTER_RADIUS, undefined, 'white');
 
     this.drawHours();
     this.drawLetters();
-    this.drawTicks();
+    this.drawTicks(24, 10.5, 1.5);
+    this.drawTicks(60, 16, 1);
     this.drawMinutes();
 
     const hours = new Date().getUTCHours();
@@ -146,9 +223,11 @@ class Clock {
     const minutesAngle = -minutes * (Math.PI / 30) + Math.PI / 2;
     const secondsAngle = -seconds * (Math.PI / 30) + Math.PI / 2;
 
-    this.drawDial(hourAngle, 5);
-    this.drawDial(minutesAngle, 10);
-    this.drawDial(secondsAngle, 15);
+    this.drawDial(hourAngle, 5.5, HOUR_HAND_COLOR, 3);
+    this.drawDial(minutesAngle, 15, MINUTES_HAND_COLOR, 3);
+    this.drawDial(secondsAngle, 16, SECONDS_HAND_COLOR, 1);
+
+    this.drawCircle(math2Canvas(new Vec2(0, 0)), 0.75, '#333');
   }
 }
 
