@@ -1,18 +1,19 @@
 import * as moment from 'moment-timezone';
 
+const CIRCLE_LINE_WIDTH = 0.5;
+
 const SCALE = 10;
 const CLOCK_RADIUS = 17;
 const LETTERS_RADIUS = 5;
 const LETTERS_OUTER_RADIUS = 8;
 
+const CLOCK_LID_COLOR = "#333";
 const TICK_COLOR = 'white';
 const NUMBERS_COLOR = 'white';
 const LETTERS_COLOR = 'white';
 const HOUR_HAND_COLOR = 'red';
 const MINUTES_HAND_COLOR = 'red';
 const SECONDS_HAND_COLOR = '#333';
-
-const CIRCLE_LINE_WIDTH = 0.5;
 
 const LETTERS_DISTANCE = 6.5;
 const HOURS_DISTANCE = 9.5;
@@ -103,7 +104,6 @@ class Clock {
     if (stroke) {
       this.ctx.strokeStyle = stroke;
       this.ctx.stroke();
-  
     }
 
     if (fill) {
@@ -219,7 +219,7 @@ class Clock {
     const minutes = new Date().getUTCMinutes();
     const seconds = new Date().getUTCSeconds();
 
-    const hourAngle = (-hours - this.timezoneOffset) * (Math.PI / 12) - Math.PI / 2;
+    const hourAngle = -(hours + this.timezoneOffset) * (Math.PI / 12) - Math.PI / 2;
     const minutesAngle = -minutes * (Math.PI / 30) + Math.PI / 2;
     const secondsAngle = -seconds * (Math.PI / 30) + Math.PI / 2;
 
@@ -227,7 +227,7 @@ class Clock {
     this.drawDial(minutesAngle, 15, MINUTES_HAND_COLOR, 3);
     this.drawDial(secondsAngle, 16, SECONDS_HAND_COLOR, 1);
 
-    this.drawCircle(math2Canvas(new Vec2(0, 0)), 0.75, '#333');
+    this.drawCircle(math2Canvas(new Vec2(0, 0)), 0.75, CLOCK_LID_COLOR);
   }
 }
 
