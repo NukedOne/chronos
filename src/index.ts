@@ -2,7 +2,7 @@ import * as moment from 'moment-timezone';
 
 const CIRCLE_LINE_WIDTH = 0.5;
 
-const SCALE = 10;
+const SCALE = 15;
 const CLOCK_RADIUS = 17;
 const LETTERS_RADIUS = 5;
 const LETTERS_OUTER_RADIUS = 8;
@@ -50,6 +50,7 @@ class Clock {
   private ctx: CanvasRenderingContext2D;
   private timezoneSelect: HTMLSelectElement;
   private timezoneOffset: number;
+  private timezone: string;
   private secondsDial: Vec2;
 
   constructor() {
@@ -63,7 +64,10 @@ class Clock {
     this.populateSelectBox();
     this.addEventListeners();
 
-    this.timezoneOffset = parseInt(this.timezoneSelect.value) / 60;
+    this.timezone = moment.tz.guess();
+    this.timezoneOffset = this.getTimezoneOffset(this.timezone);
+    console.log(this.timezoneOffset);
+    this.updateTimezoneInfo();
   }
 
   private setCanvasColor(canvas: HTMLCanvasElement, color: string) {
@@ -71,13 +75,19 @@ class Clock {
   }
 
   private getTimezoneOffset(zone: string): number {
-    return -moment.tz.zone(zone)!.utcOffset(new Date().getTime());
+    return -moment.tz.zone(zone)!.utcOffset(new Date().getTime()) / 60;
+  }
+
+  private updateTimezoneInfo() {
+    document.getElementById('info')!.innerText = `Showing local time for ${this.timezone}`;
   }
 
   private addEventListeners() {
     this.timezoneSelect.addEventListener('change', () => {
       const offset = this.timezoneSelect.value;
+      this.timezone = this.timezoneSelect.options[this.timezoneSelect.selectedIndex].text;
       this.timezoneOffset = parseInt(offset) / 60;
+      this.updateTimezoneInfo();
     });
   }
 
