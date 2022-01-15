@@ -66,7 +66,6 @@ class Clock {
 
     this.timezone = moment.tz.guess();
     this.timezoneOffset = this.getTimezoneOffset(this.timezone);
-    console.log(this.timezoneOffset);
     this.updateTimezoneInfo();
   }
 
@@ -84,9 +83,9 @@ class Clock {
 
   private addEventListeners() {
     this.timezoneSelect.addEventListener('change', () => {
-      const offset = this.timezoneSelect.value;
       this.timezone = this.timezoneSelect.options[this.timezoneSelect.selectedIndex].text;
-      this.timezoneOffset = parseInt(offset) / 60;
+      const offset = this.timezoneSelect.value;
+      this.timezoneOffset = parseInt(offset);
       this.updateTimezoneInfo();
     });
   }
