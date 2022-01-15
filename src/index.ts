@@ -19,12 +19,22 @@ const LETTERS_DISTANCE = 6.5;
 const HOURS_DISTANCE = 9.5;
 const MINUTES_DISTANCE = 15;
 
+const HOUR_HAND_LENGTH = 5.5;
+const MINUTES_HAND_LENGTH = 15;
+const SECONDS_HAND_LENGTH = 16;
+
+const HOUR_HAND_WIDTH = 3;
+const MINUTES_HAND_WIDTH = 3;
+const SECONDS_HAND_WIDTH = 1;
+
 const HOURS_X_OFFSET = 0.6 * SCALE;
 const HOURS_Y_OFFSET = 0.5 * SCALE;
 const MINUTES_X_OFFSET = 0.6 * SCALE;
 const MINUTES_Y_OFFSET = 0.6 * SCALE;
 const LETTERS_X_OFFSET = 0.4 * SCALE;
 const LETTERS_Y_OFFSET = 0.5 * SCALE;
+
+const CLOCK_LID_RADIUS = 0.75;
 
 const LETTERS: Record<number, string> = {
    1: 'A',  2: 'B',  3: 'C',  4: 'D',
@@ -33,7 +43,7 @@ const LETTERS: Record<number, string> = {
   13: 'N', 14: 'P', 15: 'Q', 16: 'R',
   17: 'S', 18: 'T', 19: 'U', 20: 'V',
   21: 'W', 22: 'X', 23: 'Y', 24: 'Z',
-}
+};
 
 class Clock {
   private canvas: HTMLCanvasElement;
@@ -223,11 +233,26 @@ class Clock {
     const minutesAngle = -minutes * (Math.PI / 30) + Math.PI / 2;
     const secondsAngle = -seconds * (Math.PI / 30) + Math.PI / 2;
 
-    this.drawDial(hourAngle, 5.5, HOUR_HAND_COLOR, 3);
-    this.drawDial(minutesAngle, 15, MINUTES_HAND_COLOR, 3);
-    this.drawDial(secondsAngle, 16, SECONDS_HAND_COLOR, 1);
+    this.drawDial(
+      hourAngle,
+      HOUR_HAND_LENGTH,
+      HOUR_HAND_COLOR,
+      HOUR_HAND_WIDTH,
+    );
+    this.drawDial(
+      minutesAngle,
+      MINUTES_HAND_LENGTH,
+      MINUTES_HAND_COLOR,
+      MINUTES_HAND_WIDTH,
+    );
+    this.drawDial(
+      secondsAngle,
+      SECONDS_HAND_LENGTH,
+      SECONDS_HAND_COLOR,
+      SECONDS_HAND_WIDTH,
+    );
 
-    this.drawCircle(math2Canvas(new Vec2(0, 0)), 0.75, CLOCK_LID_COLOR);
+    this.drawCircle(math2Canvas(new Vec2(0, 0)), CLOCK_LID_RADIUS, CLOCK_LID_COLOR);
   }
 }
 
