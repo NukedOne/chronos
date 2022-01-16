@@ -37,12 +37,12 @@ const LETTERS_Y_OFFSET = 0.3 * SCALE;
 const CLOCK_LID_RADIUS = 0.75;
 
 const LETTERS: Record<number, string> = {
-   1: 'A',  2: 'B',  3: 'C',  4: 'D',
-   5: 'E',  6: 'F',  7: 'G',  8: 'H',
-   9: 'J', 10: 'K', 11: 'L', 12: 'M',
-  13: 'N', 14: 'P', 15: 'Q', 16: 'R',
-  17: 'S', 18: 'T', 19: 'U', 20: 'V',
-  21: 'W', 22: 'X', 23: 'Y', 24: 'Z',
+   1: 'B',  2: 'C',  3: 'D',  4: 'E',
+   5: 'F',  6: 'G',  7: 'H',  8: 'J',
+   9: 'K', 10: 'L', 11: 'M', 12: 'N',
+  13: 'P', 14: 'Q', 15: 'R', 16: 'S',
+  17: 'T', 18: 'U', 19: 'V', 20: 'W',
+  21: 'X', 22: 'Y', 23: 'Z', 24: 'A',
 };
 
 class Clock {
@@ -52,6 +52,7 @@ class Clock {
   private timezoneOffset: number;
   private timezone: string;
   private secondsDial: Vec2;
+  private lettersAngles: Record<number, string> = {};
 
   constructor() {
     this.timezoneSelect = document.getElementById('timezone') as HTMLSelectElement;
@@ -82,7 +83,7 @@ class Clock {
   }
 
   private updateEverywhereInfo() {
-    const hour = new Date().getHours();
+    const hour = new Date().getUTCHours();
     const minutes = new Date().getUTCMinutes();
     const letter = LETTERS[hour];
 
@@ -181,13 +182,15 @@ class Clock {
 
   private drawLetters() {
     for (let hour = 1; hour <= 24; hour++) {
-      const angle = -(hour + this.timezoneOffset) * (Math.PI / 12) - (Math.PI / 2) + (Math.PI / 12);
+      const angle = -(hour + this.timezoneOffset) * (Math.PI / 12) - (Math.PI / 2);
       const coord = new Vec2(Math.cos(angle), Math.sin(angle));
       const canvasCoord = math2Canvas(coord.scalarMul(LETTERS_DISTANCE));
       const adjustedCanvasCoord = new Vec2(
         canvasCoord.x - LETTERS_X_OFFSET,
         canvasCoord.y + LETTERS_Y_OFFSET,
       );
+
+      this.lettersAngles[angle] = LETTERS[hour];
 
       this.ctx.beginPath();
       this.ctx.fillStyle = LETTERS_COLOR;
