@@ -78,7 +78,15 @@ class Clock {
   }
 
   private updateTimezoneInfo() {
-    document.getElementById('info')!.innerText = `Showing local time for ${this.timezone}`;
+    document.getElementById('tz-info')!.innerText = `Showing local time for ${this.timezone}`;
+  }
+
+  private updateEverywhereInfo() {
+    const hour = new Date().getUTCHours() + this.timezoneOffset;
+    const minutes = new Date().getUTCMinutes();
+    const letter = LETTERS[hour];
+
+    document.getElementById('everywhere')!.innerText = `It's ${letter}:${minutes} everywhere.`
   }
 
   private addEventListeners() {
@@ -262,6 +270,7 @@ class Clock {
     );
 
     this.drawCircle(math2Canvas(new Vec2(0, 0)), CLOCK_LID_RADIUS, CLOCK_LID_COLOR);
+    this.updateEverywhereInfo();
   }
 }
 
