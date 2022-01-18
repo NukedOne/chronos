@@ -102,8 +102,8 @@ class Clock {
   }
 
   private setCanvasSize(canvas: HTMLCanvasElement) {
-    this.canvas.width = window.innerWidth;
-    this.canvas.height = window.innerHeight;
+    this.canvas.width = SCALE * 2 * CLOCK_RADIUS;
+    this.canvas.height = SCALE * 2 * CLOCK_RADIUS;
   }
 
   private populateSelectBox() {
@@ -301,8 +301,8 @@ class Vec2 {
 
 const math2Canvas = (coord: Vec2): Vec2 => {
   return new Vec2(
-    SCALE * coord.x + window.innerWidth / 2,
-    SCALE * -coord.y + window.innerHeight / 2,
+    SCALE * (coord.x + CLOCK_RADIUS),
+    SCALE * (-coord.y + CLOCK_RADIUS),
   );
 }
 
