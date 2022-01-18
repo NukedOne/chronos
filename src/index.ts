@@ -43,6 +43,7 @@ const LETTERS: Record<number, string> = {
   13: 'P', 14: 'Q', 15: 'R', 16: 'S',
   17: 'T', 18: 'U', 19: 'V', 20: 'W',
   21: 'X', 22: 'Y', 23: 'Z', 24: 'A',
+  0: 'A',
 };
 
 class Clock {
@@ -84,6 +85,7 @@ class Clock {
 
   private updateEverywhereInfo() {
     const hour = new Date().getUTCHours();
+    console.log(hour);
     const minutes = new Date().getUTCMinutes();
     const letter = LETTERS[hour];
 
