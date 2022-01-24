@@ -7,7 +7,7 @@ const CLOCK_RADIUS = 17;
 const LETTERS_RADIUS = 5;
 const LETTERS_OUTER_RADIUS = 8;
 
-const CLOCK_LID_COLOR = "#333";
+const CLOCK_LID_COLOR = '#333';
 const TICK_COLOR = 'white';
 const NUMBERS_COLOR = 'white';
 const LETTERS_COLOR = 'white';
@@ -37,9 +37,9 @@ const LETTERS_Y_OFFSET = 0.3 * SCALE;
 const CLOCK_LID_RADIUS = 0.75;
 
 const LETTERS: Record<number, string> = {
-   1: 'B',  2: 'C',  3: 'D',  4: 'E',
-   5: 'F',  6: 'G',  7: 'H',  8: 'J',
-   9: 'K', 10: 'L', 11: 'M', 12: 'N',
+  1: 'B',  2: 'C',  3: 'D',  4: 'E',
+  5: 'F',  6: 'G',  7: 'H',  8: 'J',
+  9: 'K', 10: 'L', 11: 'M', 12: 'N',
   13: 'P', 14: 'Q', 15: 'R', 16: 'S',
   17: 'T', 18: 'U', 19: 'V', 20: 'W',
   21: 'X', 22: 'Y', 23: 'Z', 24: 'A',
@@ -62,7 +62,7 @@ class Clock {
     this.secondsDial = new Vec2(0, 1);
 
     this.setCanvasSize(this.canvas);
-    this.setCanvasColor(this.canvas, '#000');
+    this.setCanvasColor(this.canvas, '#1c2128');
     this.populateSelectBox();
     this.addEventListeners();
 
@@ -89,7 +89,7 @@ class Clock {
     const minutes = new Date().getUTCMinutes();
     const letter = LETTERS[hour];
 
-    document.getElementById('everywhere')!.innerText = `It's ${letter}:${minutes} everywhere.`
+    document.getElementById('everywhere')!.innerText = `It's ${letter}:${minutes} everywhere.`;
   }
 
   private addEventListeners() {
@@ -102,8 +102,8 @@ class Clock {
   }
 
   private setCanvasSize(canvas: HTMLCanvasElement) {
-    this.canvas.width = SCALE * 2 * CLOCK_RADIUS;
-    this.canvas.height = SCALE * 2 * CLOCK_RADIUS;
+    canvas.width = SCALE * 2 * CLOCK_RADIUS;
+    canvas.height = SCALE * 2 * CLOCK_RADIUS;
   }
 
   private populateSelectBox() {
@@ -129,7 +129,7 @@ class Clock {
       SCALE * r,
       0,
       2 * Math.PI,
-    )
+    );
     
     if (stroke) {
       this.ctx.strokeStyle = stroke;
@@ -283,7 +283,7 @@ class Clock {
 }
 
 class Vec2 {
-  constructor(public x: number, public y: number) {};
+  constructor(public x: number, public y: number) {}
 
   public scalarMul(scalar: number): Vec2 {
     return new Vec2(this.x * scalar, this.y * scalar);
@@ -293,7 +293,7 @@ class Vec2 {
     const rotationMatrix: number[][] = [
       [Math.cos(angle), Math.sin(angle)],
       [-Math.sin(angle), Math.cos(angle)],
-    ]
+    ];
     const [row1, row2] = rotationMatrix;
     return new Vec2(
       this.x * row1[0] + this.y * row1[1],
@@ -307,12 +307,13 @@ const math2Canvas = (coord: Vec2): Vec2 => {
     SCALE * (coord.x + CLOCK_RADIUS),
     SCALE * (-coord.y + CLOCK_RADIUS),
   );
-}
+};
 
 async function main() {
   const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
   const clock = new Clock();
 
+  // eslint-disable-next-line no-constant-condition
   while (true) {
     clock.rotateSecondsDial();
     clock.reDraw();
