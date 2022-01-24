@@ -21,7 +21,7 @@ const MINUTES_DISTANCE = 15;
 
 const HOUR_HAND_LENGTH = 5.5;
 const MINUTES_HAND_LENGTH = 15;
-const SECONDS_HAND_LENGTH = 16;
+const SECONDS_HAND_LENGTH = 16.5;
 
 const HOUR_HAND_WIDTH = 3;
 const MINUTES_HAND_WIDTH = 3;
@@ -30,7 +30,7 @@ const SECONDS_HAND_WIDTH = 1;
 const HOURS_X_OFFSET = 0.5 * SCALE;
 const HOURS_Y_OFFSET = 0.3 * SCALE;
 const MINUTES_X_OFFSET = 0.6 * SCALE;
-const MINUTES_Y_OFFSET = 0.6 * SCALE;
+const MINUTES_Y_OFFSET = 0.3 * SCALE;
 const LETTERS_X_OFFSET = 0.3 * SCALE;
 const LETTERS_Y_OFFSET = 0.3 * SCALE;
 
@@ -173,6 +173,7 @@ class Clock {
       
       this.ctx.beginPath();
       this.ctx.fillStyle = 'white';
+      this.ctx.font = '12px sans-serif';
       this.ctx.fillText(
         (5 * minute).toString(),
         canvasCoord.x - MINUTES_X_OFFSET,
@@ -195,6 +196,7 @@ class Clock {
       this.lettersAngles[angle] = LETTERS[hour];
 
       this.ctx.beginPath();
+      this.ctx.font = '15px sans-serif';
       this.ctx.fillStyle = LETTERS_COLOR;
       this.ctx.fillText(LETTERS[hour], adjustedCanvasCoord.x, adjustedCanvasCoord.y);
       this.ctx.closePath();
@@ -244,7 +246,8 @@ class Clock {
     this.drawHours();
     this.drawLetters();
     this.drawTicks(24, 10.5, 1.5);
-    this.drawTicks(60, 16, 1);
+    this.drawTicks(12, 16, 0.5);
+    this.drawTicks(60, 16.5, 0.5);
     this.drawMinutes();
 
     const hours = new Date().getUTCHours();
