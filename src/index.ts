@@ -62,7 +62,7 @@ class Clock {
     this.secondsDial = new Vec2(0, 1);
 
     this.setCanvasSize(this.canvas);
-    this.setCanvasColor(this.canvas, '#1c2128');
+    this.setCanvasColor(this.canvas, 'black');
     this.populateSelectBox();
     this.addEventListeners();
 
