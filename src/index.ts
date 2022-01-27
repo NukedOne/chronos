@@ -14,6 +14,7 @@ const LETTERS_COLOR = 'white';
 const HOUR_HAND_COLOR = 'red';
 const MINUTES_HAND_COLOR = 'red';
 const SECONDS_HAND_COLOR = '#333';
+const CURRENT_HOUR_COLOR = 'red';
 
 const LETTERS_DISTANCE = 6.5;
 const HOURS_DISTANCE = 9.5;
@@ -193,9 +194,11 @@ class Clock {
         canvasCoord.y + LETTERS_Y_OFFSET,
       );
 
+      const currentHour = new Date().getUTCHours();
+
       this.ctx.beginPath();
       this.ctx.font = '15px sans-serif';
-      this.ctx.fillStyle = LETTERS_COLOR;
+      this.ctx.fillStyle = LETTERS[hour] === LETTERS[currentHour] ? CURRENT_HOUR_COLOR : LETTERS_COLOR;
       this.ctx.fillText(LETTERS[hour], adjustedCanvasCoord.x, adjustedCanvasCoord.y);
       this.ctx.closePath();
     }
