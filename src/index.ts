@@ -53,7 +53,6 @@ class Clock {
   private timezoneOffset: number;
   private timezone: string;
   private secondsDial: Vec2;
-  private lettersAngles: Record<number, string> = {};
 
   constructor() {
     this.timezoneSelect = document.getElementById('timezone') as HTMLSelectElement;
@@ -193,8 +192,6 @@ class Clock {
         canvasCoord.x - LETTERS_X_OFFSET,
         canvasCoord.y + LETTERS_Y_OFFSET,
       );
-
-      this.lettersAngles[angle] = LETTERS[hour];
 
       this.ctx.beginPath();
       this.ctx.font = '15px sans-serif';
