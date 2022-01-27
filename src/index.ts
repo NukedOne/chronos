@@ -156,6 +156,7 @@ class Clock {
       
       this.ctx.beginPath();
       this.ctx.fillStyle = NUMBERS_COLOR;
+      this.ctx.font = '12px sans-serif';
       this.ctx.fillText(
         hour.toString(),
         adjustedCanvasCoord.x,
