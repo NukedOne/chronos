@@ -80,7 +80,7 @@ class Clock {
   }
 
   private updateTimezoneInfo() {
-    document.getElementById('tz-info')!.innerText = `Showing local time for ${this.timezone}`;
+    document.getElementById('tz-info')!.innerText = `${this.timezone}`;
   }
 
   private updateEverywhereInfo() {
