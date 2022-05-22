@@ -85,7 +85,6 @@ class Clock {
 
   private updateEverywhereInfo() {
     const hour = new Date().getUTCHours();
-    console.log(hour);
     const minutes = new Date().getUTCMinutes();
     const letter = LETTERS[hour];
 
