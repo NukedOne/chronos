@@ -1,5 +1,7 @@
 import * as moment from 'moment-timezone';
 
+const CANVAS_SIZE = 520;
+
 const CIRCLE_LINE_WIDTH = 0.5;
 
 const SCALE = 15;
@@ -76,6 +78,7 @@ class Clock {
   }
 
   private getTimezoneOffset(zone: string): number {
+    /* How far ahead (or behind) is the user from UTC, in hours. */
     return -moment.tz.zone(zone)!.utcOffset(new Date().getTime()) / 60;
   }
 
@@ -101,8 +104,8 @@ class Clock {
   }
 
   private setCanvasSize(canvas: HTMLCanvasElement) {
-    canvas.width = SCALE * 2 * CLOCK_RADIUS;
-    canvas.height = SCALE * 2 * CLOCK_RADIUS;
+    canvas.width = CANVAS_SIZE;
+    canvas.height = CANVAS_SIZE;
   }
 
   private populateSelectBox() {
@@ -145,6 +148,12 @@ class Clock {
 
   private drawHours() {
     for (let hour = 1; hour <= 24; hour++) {
+      /* A full turn is 2pi.
+       * We need 24th of a turn, because we have that many letters,
+       * which is 1/24 * 2pi, that is 1/12pi, that is pi/12.
+       * 
+       * We want to position the letters starting from the bottom,
+       * which is -pi/2. */
       const angle = -hour * (Math.PI / 12) - Math.PI / 2;
       const coord = new Vec2(Math.cos(angle), Math.sin(angle));
       const canvasCoord = math2Canvas(coord.scalarMul(HOURS_DISTANCE));
@@ -303,9 +312,19 @@ class Vec2 {
 }
 
 const math2Canvas = (coord: Vec2): Vec2 => {
+  /* Math coordinates work such that (0, 0) is the circle center,
+   * because rotating around (0, 0) is much easier than rotating
+   * around any other point.
+   * 
+   * We need to convert these coords into canvas coords.
+   * 
+   * The thing with canvas coords is that (0, 0) in canvas is the
+   * top-left corner, and more 'y' in math means going UP, while
+   * more 'y' in canvas coords means going DOWN, so we need the minus
+   * to flip the direction. */
   return new Vec2(
-    SCALE * (coord.x + CLOCK_RADIUS),
-    SCALE * (-coord.y + CLOCK_RADIUS),
+    SCALE * coord.x + CANVAS_SIZE / 2,
+    SCALE * (-coord.y) + CANVAS_SIZE / 2,
   );
 };
 
