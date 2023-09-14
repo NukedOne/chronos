@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Teko:wght@600&display=swap" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Oswald&family=Teko:wght@600&display=swap" rel="stylesheet"> 
+        <script src="main.js"></script>
+        <style>
+            body {
+                background-color: black;
+            }
+
+            div {
+                background-color: black;
+                color: white;
+                font-family: 'Oswald', sans-serif;
+                font-size: 2rem;
+            }
+
+            .app {
+                width: 100%;
+                height: 1000px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                margin: auto;
+                gap: 20px;
+            }
+
+            canvas {
+                margin-bottom: 40px;
+            }
+
+            #tz-info {
+                font-size: 3rem;
+                font-family: 'Oswald', sans-serif;
+                font-style: italic;
+                font-weight: bold;
+                color: red;
+            }
+
+            .dummy {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+            }
+
+            select {
+                margin-top: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="app">
+            <canvas id="canvas"></canvas>
+            <div class="dummy">
+                <div>Showing local time for</div>
+                <div id="tz-info"></div>
+                <div id="everywhere"></div>    
+                <select id="timezone"></select>    
+            </div>
+        </div>
+    </body>
+</html>
