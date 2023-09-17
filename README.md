@@ -7,8 +7,11 @@ A global clock designed to eliminate timezone confusion by displaying UTC (using
 - Clone the repository and install it with npm.
 - Run `npm build`
 - Copy `index.html` into the dist folder.
+- Run `npm run start`
 
 ## Deployment
+
+Make sure you build first.
 
 ```
 ./deploy.sh
