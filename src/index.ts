@@ -214,7 +214,7 @@ class Clock {
 
   private drawTicks(count: number, distance: number, length: number) {
     for (let tick = 1; tick <= count; tick++) {
-      const angle = -tick * (Math.PI / (count / 2)) + Math.PI / 2;
+      const angle = tick * (Math.PI / (count / 2));
       const coord = new Vec2(Math.cos(angle), Math.sin(angle));
       const canvasCoord = math2Canvas(coord.scalarMul(distance));
       const tickAttachment = math2Canvas(coord.scalarMul(distance + length));
